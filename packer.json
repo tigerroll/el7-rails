@@ -1,0 +1,121 @@
+{
+  "variables": {
+    "image_iso": "",
+    "image_sum": ""
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "vm_name": "box",
+      "boot_wait": "10s",
+      "disk_size": 51200,
+      "guest_os_type": "RedHat_64",
+      "iso_url": "http://ftp.iij.ad.jp/pub/linux/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso",
+      "iso_checksum": "bba314624956961a2ea31dd460cd860a77911c1e0a56e4820a12b9c5dad363f5",
+      "iso_checksum_type": "sha256",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "ssh_port": 22,
+      "ssh_pty" : true,
+      "hard_drive_interface" : "scsi",
+      "shutdown_command": "sudo /sbin/poweroff",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "http_directory": "./packer/builders/",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+      ]
+    },
+    {
+      "type": "qemu",
+      "iso_url": "{{user `image_iso`}}",
+      "iso_checksum": "{{user `image_sum`}}",
+      "iso_checksum_type": "sha256",
+      "shutdown_command": "shutdown -P now",
+      "shutdown_timeout": "10m",
+      "disk_size": 51200,
+      "format": "qcow2",
+      "headless": false,
+      "accelerator": "kvm",
+      "http_directory": "./packer/builders/",
+      "ssh_username": "root",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "ssh_pty" : true,
+      "vm_name": "box",
+      "net_device": "virtio-net",
+      "disk_interface": "virtio-scsi",
+      "boot_wait": "10s",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+      ],
+      "qemuargs": [
+        [ "-cpu", "Westmere" ],
+        [ "-smp", "sockets=1,cores=4,threads=4" ],
+        [ "-m", "4096M" ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "packer/provisioners/common/base.sh",
+        "packer/provisioners/common/tcp-kernel-param.sh",
+        "packer/provisioners/web/create-user-webmaster.sh",
+        "packer/provisioners/web/install-nginx.sh",
+        "packer/provisioners/web/advanced-nginx.sh",
+        "packer/provisioners/web/configure-vhost.sh",
+        "packer/provisioners/mysql/install-mysql.sh",
+        "packer/provisioners/mysql/init-mysql.sh",
+        "packer/provisioners/redis/redis-kernel-param.sh",
+        "packer/provisioners/misc/install-wandisco-git.sh",
+        "packer/provisioners/misc/install-chrony.sh",
+        "packer/provisioners/common/enable-defence-portscan.sh",
+        "packer/provisioners/common/vagrant.sh",
+        "packer/provisioners/common/vmware.sh",
+        "packer/provisioners/common/cleanup.sh"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'"
+        }
+      }
+    },
+    {
+      "type": "shell",
+      "script": "packer/provisioners/common/virtualbox.sh",
+      "only": [
+        "virtualbox-iso"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'"
+        }
+      }
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "type": "vagrant",
+      "output": "./packer/vagrant-boxes/CentOS-7-x86_64-Minimal.box"
+    }
+  ]
+}
