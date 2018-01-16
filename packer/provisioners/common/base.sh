@@ -95,6 +95,10 @@ typeset PACKAGE=""                    # package list.
 PACKAGE="${PACKAGE} kernel-devel"     # Package for kernel build.
 PACKAGE="${PACKAGE} kernel-headers"   # Header file for kernel build.
 PACKAGE="${PACKAGE} ivtv-firmware"    # Binary firmware for iTVC15-family.
+PACKAGE="${PACKAGE} libffi-devel"     # Development files for libffi.
+PACKAGE="${PACKAGE} libtool"          # The GNU Portable Library Tool.
+PACKAGE="${PACKAGE} libyaml-devel"    # Development files for LibYAML applications.
+PACKAGE="${PACKAGE} libyaml"          # YAML 1.1 parser and emitter written in C.
 yum -y install ${PACKAGE}
 
 # shows the full path of which commands.

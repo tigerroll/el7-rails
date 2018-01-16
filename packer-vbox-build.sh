@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
-export PACKER=~/bin/packer
+export PACKER=../../../../bin/packer
+#export PACKER=~/bin/packer
 export PACKER_LOG=1
 export PACKER_LOG_PATH="packer/logs/packer-vbox.log"
 export IMAGE_NAME='CentOS-7-x86_64-Minimal'
