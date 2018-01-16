@@ -17,7 +17,7 @@ vagrant destroy
 
 # Delete image of vagrant box.
 [[ -e "${BOXES}/${IMAGE_NAME}" ]] && {
-    vagrant box remove CentOS-7-x86_64-Minimal_javaee
+    vagrant box remove CentOS-7-x86_64-Minimal
     rm -rf "${BOXES}/${IMAGE_NAME}"
     echo "boxes deleted"
 }

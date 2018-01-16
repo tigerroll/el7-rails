@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-export PACKER=../../../../bin/packer
-#export PACKER=~/bin/packer
+export PACKER=~/bin/packer
 export PACKER_LOG=1
 export PACKER_LOG_PATH="packer/logs/packer-vbox.log"
 export IMAGE_NAME='CentOS-7-x86_64-Minimal'
@@ -29,7 +28,7 @@ export IMAGE_ISO=${URL}/${ARCH}/$(
 )
 
 # Get Check Sum for latest OS image.
-export IMAGE_SUM=${URL}/${ARCH}/$(
+export IMAGE_SUM=$(
     curl -s ${URL}/${ARCH}/$(\
         curl -s ${URL}/${ARCH}/ |\
         sed -n 's/^.*<a.href="[^"]*">\([^<]*\).*/\1/p'|\
@@ -40,6 +39,6 @@ export IMAGE_SUM=${URL}/${ARCH}/$(
 
 eval "${PACKER} build \\
       -only=virtualbox-iso \\
-      -var image_iso=${IMAGE_ISO} \\
-      -var image_sum=${IMAGE_SUM} \\
+      -var image_iso="${IMAGE_ISO}" \\
+      -var image_sum="${IMAGE_SUM}" \\
       packer.json"
