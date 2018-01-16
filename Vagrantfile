@@ -3,7 +3,7 @@
 
 Vagrant.require_version ">= 1.6.2"
 
-BOX_NAME = "CentOS-7-x86_64-Minimal_javaee"
+BOX_NAME = "CentOS-7-x86_64-Minimal"
 
 Vagrant.configure("2") do |config|
 
@@ -33,8 +33,5 @@ Vagrant.configure("2") do |config|
       domain.nested = true
     end
   end
-  config.vm.synced_folder ".", "/vagrant",
-    :nfs => true,
-    :nfs_version => 4,
-    :nfs_udp => false
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 end

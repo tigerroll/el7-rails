@@ -84,6 +84,7 @@
         "packer/provisioners/web/configure-vhost.sh",
         "packer/provisioners/mysql/install-mysql.sh",
         "packer/provisioners/mysql/init-mysql.sh",
+        "packer/provisioners/redis/install-redis.sh",
         "packer/provisioners/redis/redis-kernel-param.sh",
         "packer/provisioners/misc/install-wandisco-git.sh",
         "packer/provisioners/misc/install-chrony.sh",
