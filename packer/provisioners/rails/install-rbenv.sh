@@ -62,7 +62,7 @@ Defaults    env_keep += "RBENV_ROOT"
 EOF
 
 #
-cat << 'EOF' >> /etc/profile.d/rbenv
+cat << 'EOF' > /etc/profile.d/rbenv
 export RBENV_ROOT="/usr/local/rbenv"
 export PATH="${RBENV_ROOT}/bin:${PATH}"
 eval "$(rbenv init --no-rehash -)"
