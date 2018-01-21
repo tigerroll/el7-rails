@@ -2,7 +2,7 @@
 
 # redis install.
 yum -y --enablerepo=remi,remi-test,epel install redis
-redis --version
+redis-server --version
 
 # Firewall settings.(nginx)
 type firewall-cmd > /dev/null 2>&1 && (

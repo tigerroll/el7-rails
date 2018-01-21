@@ -15,6 +15,6 @@ typeset SYS_MYSQL=/etc/sysctl.d/turn_mysql.conf
 # Main process definition area.
 #####################################################################
 # configure kernel parameters at runtime.
-echo "vm.overcommit_memory = 2" >> "${SYS_REDIS}"
-echo "vm.swappiness = 0" >> "${SYS_REDIS}"
+echo "vm.overcommit_memory = 2" >> "${SYS_MYSQL}"
+echo "vm.swappiness = 0" >> "${SYS_MYSQL}"
 

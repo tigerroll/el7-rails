@@ -17,6 +17,10 @@ DEFAULT_CONFIG='/etc/nginx/conf.d/default.conf'
 #####################################################################
 # generate default.conf 
 cat << 'EOF' > ${DEFAULT_CONFIG}
+upstream unicorn {
+    server  unix:/tmp/unicorn.sock;
+}
+
 server {
 
     # Server baseic dedionition.
@@ -31,7 +35,7 @@ server {
     real_ip_header X-Forwarded-For;
 
     # Document root definition.
-    root    /home/webmaster/www/html;
+    root    /home/webmaster/www/html/public;
 
     # Strict https request definition.
     if ($http_x_forwarded_proto != https) {
@@ -50,22 +54,21 @@ server {
         allow   all;
     }
 
-    # Pass request containing subdomain to PHP.
+    # Pass request containing subdomain to rails.
     location / {
-        try_files $uri /index.php?$query_string;
+        try_files $uri/index.html $uri @unicorn;
     }
 
-    # Send the request to PHP-FPM.
-    location ~ \.php$ {
-        fastcgi_pass   127.0.0.1:9000;
-        fastcgi_index  index.php;
-        fastcgi_param  SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
-        include        fastcgi_params;
+    location @unicorn {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_pass http://unicorn;
     }
 
     ## Basic authentication definition area.
-    #auth_basic           "auth";
-    #auth_basic_user_file /home/webmaster/www/html/conf/htpasswd.conf;
+    auth_basic           "auth";
+    auth_basic_user_file /home/webmaster/www/html/conf/htpasswd.conf;
 
 }
 EOF
@@ -74,8 +77,8 @@ cat ${DEFAULT_CONFIG}
 # basic auth password files.
 install -o nginx -g nginx -m 705 -d /home/webmaster/www/html/conf
 cd /home/webmaster/www/html/conf
-htpasswd -cdb htpasswd.conf 'ssmuser' '8DzVYxW4pn9p'
-htpasswd -db htpasswd.conf 'Ho!sysUser' 'BVJH.X8XrSmv'
+htpasswd -cdb htpasswd.conf 'admin' 'admin'
+htpasswd -db htpasswd.conf 'user01' 'user01'
 chown -R nginx:nginx /home/webmaster/www/html
 cat htpasswd.conf
 
