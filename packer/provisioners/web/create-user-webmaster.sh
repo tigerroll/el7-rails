@@ -46,7 +46,7 @@ done
 install -g "${groups}" -o "${userid}" -m 705 -d /home/"${userid}"/www
 install -g "${groups}" -o "${userid}" -m 705 -d /home/"${userid}"/www/html
 
-# Create Database DUMP directory.
+# Create log backup directory.
 install -g "${groups}" -o "${userid}" -m 705 -d /home/"${userid}"/backup
 install -g "${groups}" -o "${userid}" -m 705 -d /home/"${userid}"/backup/logs
 install -g "${groups}" -o "${userid}" -m 705 -d /home/"${userid}"/backup/logs/nginx
